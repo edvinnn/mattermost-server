@@ -34,7 +34,7 @@ pipeline {
           platformStages.platformEcho()
         }
         sh """
-        env
+        echo ${GIT_COMMIT}
         """
       }
     }
