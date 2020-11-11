@@ -125,7 +125,7 @@ pipeline {
       steps {
         script {
           forcefullyCleanWorkspace(mmBuilderServer)
-          platformStages.platformCheckoutTE(env.BRANCH_NAME)
+          platformStages.platformCheckoutTE("master")
         }
         dir('src/github.com/mattermost/mattermost-server') {
           withCredentials([usernamePassword(credentialsId: 'matterbuild-docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
