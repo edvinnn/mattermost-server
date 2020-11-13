@@ -127,7 +127,6 @@ func setupTestHelper(dbStore store.Store, searchEngine *searchengine.Broker, ent
 		*cfg.EmailSettings.SendEmailNotifications = true
 		*cfg.ServiceSettings.SiteURL = ""
 
-		*cfg.ServiceSettings.DEPRECATED_DO_NOT_USE_AllowEditPost = model.ALLOW_EDIT_POST_TIME_LIMIT
 		// Disable sniffing, otherwise elastic client fails to connect to docker node
 		// More details: https://github.com/olivere/elastic/wiki/Sniffing
 		*cfg.ElasticsearchSettings.Sniff = false
@@ -140,24 +139,17 @@ func setupTestHelper(dbStore store.Store, searchEngine *searchengine.Broker, ent
 		*cfg.PasswordSettings.Uppercase = false
 		*cfg.PasswordSettings.Symbol = false
 		*cfg.PasswordSettings.Number = false
+
+		*cfg.ServiceSettings.ListenAddress = ":0"
 	})
-	// prevListenAddress := *th.App.Config().ServiceSettings.ListenAddress
-	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ListenAddress = ":0" })
 	if err := th.Server.Start(); err != nil {
 		panic(err)
 	}
 
-	// th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ListenAddress = prevListenAddress })
 	Init(th.Server, th.Server.AppOptions, th.App.Srv().Router)
 	InitLocal(th.Server, th.Server.AppOptions, th.App.Srv().LocalRouter)
 	web.New(th.Server, th.Server.AppOptions, th.App.Srv().Router)
 	wsapi.Init(th.App.Srv())
-	// th.App.DoAppMigrations()
-
-	// th.App.UpdateConfig(func(cfg *model.Config) {})
-
-	// th.App.UpdateConfig(func(cfg *model.Config) {
-	// })
 
 	if enterprise {
 		th.App.Srv().SetLicense(model.NewTestLicense())
